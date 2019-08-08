@@ -24,7 +24,7 @@ function menu(){
         console.log(inquirerResponse.menuOption);
         if (inquirerResponse.menuOption=="View Products for Sale" ){products(menu)}
         else if (inquirerResponse.menuOption=="View Low Inventory"){lowQty(menu)}
-        else if (inquirerResponse.menuOption=="Add to Inventory"){}
+        else if (inquirerResponse.menuOption=="Add to Inventory"){buyInv()}
         else if (inquirerResponse.menuOption=="Add New Product"){}
         else if (inquirerResponse.menuOption=="Quit"){quit()}
         else{console.log("That went sideways"); quit()};
@@ -44,7 +44,7 @@ function products(callback){ // Calls all products from database and displays th
 }
 
 function lowQty(callback){
-    var query = "SELECT * FROM products WHERE stock_quantity < 8";
+    var query = "SELECT * FROM products WHERE stock_quantity < 5";
     connection.query(query, function(err, res) {
         if (err) throw err;
         if(res[0]==undefined){ //If all items have minimum stock levels
@@ -61,6 +61,60 @@ function lowQty(callback){
 
 }
 
+function buyInv(){
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "Which item would you like to restock? Please enter the ID #",
+            name: "itemWant"
+        },
+        {
+            type: "input",
+            message: "How many of these would you like to order?",
+            name: "buyQty"
+        },
+    ])
+    .then(function(inquirerResponse) {
+        if (inquirerResponse.buyQty <0 || (inquirerResponse.buyQty%1)!=0){ // Verifies Qty is a positive, and a whole number
+            console.log("Sorry, we only order whole positive integers of stock\n")
+            setTimeout(function(){menu()}, 2500) //Timeout gives user time to read prompt before stock is displayed again.
+            return
+        }
+
+        var query = `SELECT * FROM products WHERE item_id = ?`;
+        connection.query(query, inquirerResponse.itemWant, function (error, results) {
+            if (error) throw err;
+
+            var newQty = parseInt(results[0].stock_quantity) + parseInt(inquirerResponse.buyQty);
+
+            if(results[0]==undefined){ //If ID# DNE kicks user to displayStock()
+                console.log("I'm sorry, but this item doesn't exist"); 
+                setTimeout(function(){menu()}, 2500)
+                return
+            }
+
+            else { //We process the transaction here
+                console.log(`
+                You have ordered ${inquirerResponse.buyQty} units of ${results[0].product_name}. We now have ${newQty} in stock
+                `)
+
+                connection.query('UPDATE products SET stock_quantity = ? WHERE item_id = ?', [newQty, results[0].item_id], function (error){
+                    if (error) throw error;
+                });
+
+                setTimeout(function(){menu()}, 2500)
+            }
+        });      
+    })
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -69,7 +123,7 @@ function quit(){
     connection.end();
 }
 
-//   * If a manager selects `View Low Inventory`, then it should list all items with an inventory count lower than five.
+
 //   * If a manager selects `Add to Inventory`, your app should display a prompt that will let the manager "add more" of any item currently in the store.
 //   * If a manager selects `Add New Product`, it should allow the manager to add a completely new product to the store.
 

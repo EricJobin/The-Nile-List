@@ -54,7 +54,7 @@ function doShopping(){
     ])
     .then(function(inquirerResponse) {
         if (inquirerResponse.buyQty <0 || (inquirerResponse.buyQty%1)!=0){ // Verifies Qty is a positive, and a whole number
-            console.log("Sorry, we only sell positive integers of quantity\n")
+            console.log("Sorry, we only sell positive whole units of stock\n")
             setTimeout(function(){displayStock(offerSale)}, 2500) //Timeout gives user time to read prompt before stock is displayed again.
             return
         }
