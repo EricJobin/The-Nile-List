@@ -12,50 +12,30 @@ var connection = mysql.createConnection({
 
 //----------------------  Do Program Stuff  -------------
 
-connection.connect(function(err) {
-	if (err) throw err;
-    //Functions to run here
-    displayStock(offerSale)
-    // offerSale()
-});
-
-function displayStock(callback){
-
+function displayStock(callback){ // Calls all products from database and displays them on screen
     var query = "SELECT item_id, product_name, price FROM products";
     connection.query(query, function(err, res) {
         if (err) throw err;
         for (var i = 0; i < res.length; i++) {
             console.log("ID: " + res[i].item_id + " | Product: " + res[i].product_name + " | $" + res[i].price);
         }
-        callback()
+        console.log("\n");
+        callback() //Using a callback ensures that program will only move onto next step after items have been displayed.
     })
-    // quit()
 }
 
-// CREATE TABLE products(
-//     item_id INTEGER NOT NULL AUTO_INCREMENT,
-//     product_name VARCHAR(50),
-//     department_name VARCHAR(30),
-//     price DECIMAL(5,2),
-//     stock_quantity INTEGER(10),
-//     PRIMARY KEY (item_id)
-// );
-
-function offerSale(){
+function offerSale(){ //Use this as a callback in displayStock to see if user wants to buy anything else or stop shopping
     inquirer.prompt({
         type: "confirm",
-        message: "\nWould you like to buy some wares?",
+        message: "Would you like to buy some wares?",
         name: "confirm",
         default: false
     })
     .then(function(inquirerResponse) {
-        // console.log(`response: ${inquirerResponse.confirm}`)
         if (inquirerResponse.confirm == true) {
-            // console.log("Call Shopping Stuff Here");
             doShopping()
         }
         else{quit()}
-
     })
 }
 
@@ -73,43 +53,46 @@ function doShopping(){
         },
     ])
     .then(function(inquirerResponse) {
-        console.log(`Want: ${inquirerResponse.itemWant}, Qty: ${inquirerResponse.buyQty}`)
-
+        if (inquirerResponse.buyQty <0 || (inquirerResponse.buyQty%1)!=0){ // Verifies Qty is a positive, and a whole number
+            console.log("Sorry, we only sell positive integers of quantity\n")
+            setTimeout(function(){displayStock(offerSale)}, 2500) //Timeout gives user time to read prompt before stock is displayed again.
+            return
+        }
 
         var query = `SELECT * FROM products WHERE item_id = ?`;
 
-        // connection.query(query, inquirerResponse.itemWant, function (error, results, fields) {
         connection.query(query, inquirerResponse.itemWant, function (error, results) {
-              if (error) throw err;
-              if(results==undefined){console.log("Item does not exist"); return}
-              console.log(`results: ${results}`);
-              console.log(results)
-
-              console.log("------------------------------------------")
-            //   console.log(stock_quantity)
-              console.log(results[0].stock_quantity)
-            //   console.log(results.RowDataPacket)
-
+            if (error) throw err;
+            if(results[0]==undefined){ //If ID# DNE kicks user to displayStock()
+                console.log("I'm sorry, but this item doesn't exist"); 
+                setTimeout(function(){displayStock(offerSale)}, 2500)
+                return
             }
-        );
-      
-        quit()
+            else if (inquirerResponse.buyQty > results[0].stock_quantity){ //If trying to buy more than stock on hand
+                console.log(`I'm sorry, but we only have ${results[0].stock_quantity} left in stock\n`); 
+                setTimeout(function(){displayStock(offerSale)}, 2500)
+                return
+            }
+            else { //We process the transaction here
+                var bill = inquirerResponse.buyQty * results[0].price;
+                console.log(`Thank you for your order. You will be billed $${bill} for your order\n
+                You will recieve ${inquirerResponse.buyQty} ${results[0].product_name}
+                `)
+
+                var newQty = results[0].stock_quantity - inquirerResponse.buyQty;
+                connection.query('UPDATE products SET stock_quantity = ? WHERE item_id = ?', [newQty, results[0].item_id], function (error){
+                    if (error) throw error;
+                });
+
+                setTimeout(function(){displayStock(offerSale)}, 2500)
+            }
+        });      
     })
-
 }
-
-
-// 6. The app should then prompt users with two messages.
-//    * The first should ask them the ID of the product they would like to buy.
-//    * The second message should ask how many units of the product they would like to buy.    ---Verify qty is positive && #
-// 7. Once the customer has placed the order, your application should check if your store has enough of the product to meet the customer's request.
-//    * If not, the app should log a phrase like `Insufficient quantity!`, and then prevent the order from going through.
-// 8. However, if your store _does_ have enough of the product, you should fulfill the customer's order.
-//    * This means updating the SQL database to reflect the remaining quantity.
-//    * Once the update goes through, show the customer the total cost of their purchase.
-
 
 function quit(){
     console.log("Thank you for shopping at The Nile List")
     connection.end();
 }
+
+displayStock(offerSale)
