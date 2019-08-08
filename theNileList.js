@@ -1,3 +1,4 @@
+//----------------------  Global Variables  --------------------------
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 
@@ -9,12 +10,14 @@ var connection = mysql.createConnection({
 	database: "nilelistdb"
 });
 
+//----------------------  Do Program Stuff  -------------
+
 connection.connect(function(err) {
 	if (err) throw err;
     //Functions to run here
-    displayStock()
+    displayStock(offerSale)
+    // offerSale()
 });
-
 
 function displayStock(callback){
 
@@ -22,10 +25,11 @@ function displayStock(callback){
     connection.query(query, function(err, res) {
         if (err) throw err;
         for (var i = 0; i < res.length; i++) {
-        console.log("ID: " + res[i].item_id + " | Product: " + res[i].product_name + " | $" + res[i].price);
+            console.log("ID: " + res[i].item_id + " | Product: " + res[i].product_name + " | $" + res[i].price);
         }
+        callback()
     })
-    quit()
+    // quit()
 }
 
 // CREATE TABLE products(
@@ -37,9 +41,62 @@ function displayStock(callback){
 //     PRIMARY KEY (item_id)
 // );
 
+function offerSale(){
+    inquirer.prompt({
+        type: "confirm",
+        message: "\nWould you like to buy some wares?",
+        name: "confirm",
+        default: false
+    })
+    .then(function(inquirerResponse) {
+        // console.log(`response: ${inquirerResponse.confirm}`)
+        if (inquirerResponse.confirm == true) {
+            // console.log("Call Shopping Stuff Here");
+            doShopping()
+        }
+        else{quit()}
+
+    })
+}
+
+function doShopping(){
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "Which item would you like to buy? Please enter the ID #",
+            name: "itemWant"
+        },
+        {
+            type: "input",
+            message: "How many of these would you like to buy?",
+            name: "buyQty"
+        },
+    ])
+    .then(function(inquirerResponse) {
+        console.log(`Want: ${inquirerResponse.itemWant}, Qty: ${inquirerResponse.buyQty}`)
 
 
-//Running this application will first display all of the items available for sale. Include the ids, names, and prices of products for sale.
+        var query = `SELECT * FROM products WHERE item_id = ?`;
+
+        // connection.query(query, inquirerResponse.itemWant, function (error, results, fields) {
+        connection.query(query, inquirerResponse.itemWant, function (error, results) {
+              if (error) throw err;
+              if(results==undefined){console.log("Item does not exist"); return}
+              console.log(`results: ${results}`);
+              console.log(results)
+
+              console.log("------------------------------------------")
+            //   console.log(stock_quantity)
+              console.log(results[0].stock_quantity)
+            //   console.log(results.RowDataPacket)
+
+            }
+        );
+      
+        quit()
+    })
+
+}
 
 
 // 6. The app should then prompt users with two messages.
@@ -53,6 +110,6 @@ function displayStock(callback){
 
 
 function quit(){
-    // console.log("Thank you for shopping at The Nile List")
+    console.log("Thank you for shopping at The Nile List")
     connection.end();
 }
