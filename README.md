@@ -13,6 +13,8 @@ mysql: "^2.17.1"
 
 After the required dependencies have been installed the program can be started by using the terminal CLI. There are two applications that can be used, theNileList.js, which is designed for users to browse and purchase items, and supremeNileList.js, which is for supervisors to monitor and maintain stock.<br/>
 
+## User Mode
+
 theNileList.js can be started by typing 'node theNileList.js' in the terminal.
 
 ![Start](/images/101.png?raw=true "Command to start program")
@@ -25,7 +27,7 @@ Under this menu the user will be prompted if they want to buy anything. If they 
 
 ![Buy](/images/103.png?raw=true "Purchasing an item")
 
-The user will then be shown how much the total order costs, and what they will be recieving. They will then again be shown the list of items and asked if they want to purchase wares. The user may make as many purchase as they wish, and will only exit once they no longer wish to buy anything.
+The user will then be shown how much the total order costs, and what they will be receiving. They will then again be shown the list of items and asked if they want to purchase wares. The user may make as many purchases as they wish, and will only exit once they no longer wish to buy anything.
 
 ![Quit](/images/104.png?raw=true "Exiting")
 
@@ -38,34 +40,32 @@ If the user attempts to buy an item not listed, or tries to buy a quantity that 
 ![WrongQty](/images/107.png?raw=true "User tried ordering a negative number")
 
 
-### Movie-This
+## Supervisor Mode
 
-If Movie-This is selected the user will be prompted to enter the name of a movie. The Movie Title, Year Released, IMDB & Rotten Tomatoes Ratings, Countries of Production, Language, Plot Summary and Staring Actors will then be displayed.
+supremeNileList.js can be started by typing 'node supremeNileList.js' in the terminal.
 
-![Movie-This](/images/mt.jpg?raw=true "Movie-This")
+![Start](/images/201.png?raw=true "Command to start program")
 
-If the user did not input a movie, the search will default to "Mr. Nobody" and the following should be displayed:
+The user will be shown a menu of options available to supervisors.
 
-![Movie-This](/images/mtd.jpg?raw=true "Movie-This Default")
+![Menu](/images/202.png?raw=true "Options Menu")
 
-### Do-What-It-Says
+The first option will display all items available in the database.
 
-If the user selects this option, a search for concerts, a song, or a movie will be performed depending on the contents of a file named random.txt located in the same folder as the liri program.<br/>
+![Items](/images/203.png?raw=true "Items Menu")
 
-Examples:<br/>
+The second option allows the user to view just the items that are low in stock (under 5 units).
 
-Concert Search
-![Do This](/images/dwisc.jpg?raw=true "Concert Search")
+![LowStock](/images/204.png?raw=true "Low Stock Menu")
 
-Song Search
-![Do This](/images/dwiss.jpg?raw=true "Song Search")
+The third options allows the supervisor to replenish stock of an item.
 
-Movie Search
-![Do This](/images/dwism.jpg?raw=true "Movie Search")
+![BuyStock](/images/205.png?raw=true "Replenish Stock")
 
+The fourth option allows the supervisor to add a new item to the database. The program will prompt the supervisor for the name of the new item, allows the supervisor to pick a department from a list of departments, set the price of the item, and the initial quantity to carry of the item. The supervisor will then be shown the attributes for the item they're adding, and asked to confirm that they are correct before adding the item to the database.
 
+![NewItem](/images/206.png?raw=true "Adding a new Item")
 
-### Quit
+The final option allows the supervisor to exit the program if they do not wish to perform any further actions.
 
-If the user does not wish to perform any of the above functions, Quit may be selected to leave the program.
-
+![Quit](/images/207.png?raw=true "Quit")
