@@ -64,7 +64,7 @@ function doShopping(){
         connection.query(query, inquirerResponse.itemWant, function (error, results) {
             if (error) throw err;
             if(results[0]==undefined){ //If ID# DNE kicks user to displayStock()
-                console.log("I'm sorry, but this item doesn't exist"); 
+                console.log("I'm sorry, but this item doesn't exist\n"); 
                 setTimeout(function(){displayStock(offerSale)}, 2500)
                 return
             }

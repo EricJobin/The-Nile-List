@@ -1,0 +1,25 @@
+{
+  "name": "The-Nile-List",
+  "version": "1.0.0",
+  "description": "This is a node js application that mimics an online store like Amazon or Craigslist, but uses a CLI and bash terminal to display items and take in commands. This application was developed to practice making node cli applications, using npm packages, and making them work with a local MySQL database.",
+  "main": "supremeNileList.js",
+  "dependencies": {
+    "inquirer": "^6.5.0",
+    "mysql": "^2.17.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EricJobin/The-Nile-List.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EricJobin/The-Nile-List/issues"
+  },
+  "homepage": "https://github.com/EricJobin/The-Nile-List#readme"
+}
