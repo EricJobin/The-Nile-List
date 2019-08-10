@@ -21,21 +21,21 @@ Once this is done the user will be presented with a list showing the wares for s
 
 ![Menu](/images/102.png?raw=true "Items for sale")
 
-### Concert-This
+Under this menu the user will be prompted if they want to buy anything. If they choose yes then they will be prompted for which item they want and how many.
 
-If Concert-This is selected the user must then enter the name of a band they wish to find concerts for. A list of Concerts, their dates, and location will then be displayed.
+![Buy](/images/103.png?raw=true "Purchasing an item")
 
-![Concert This](/images/ct.jpg?raw=true "Concert This")
+The user will then be shown how much the total order costs, and what they will be recieving. They will then again be shown the list of items and asked if they want to purchase wares. The user may make as many purchase as they wish, and will only exit once they no longer wish to buy anything.
 
-### Spotify-This-Song
+![Quit](/images/104.png?raw=true "Exiting")
 
-If Spotify-This-Song is selected the user will be prompted to enter the name of a song. The Artist Name, Song Title, Preview Link, and Album Name will then be displayed if the song is found.
+### Error Handling
 
-![Spotify-This-Song](/images/st.jpg?raw=true "Spotify-This-Song")
+If the user attempts to buy an item not listed, or tries to buy a quantity that is greater than what is in stock, or orders a negative or fractional stock quantity, they will be told that they may not do so and be returned to the purchase wares prompt.
 
-If the user did not input a song, the search will default to "Ace of Spades" and the following should be displayed:
-
-![Spotify-This-Song](/images/std.jpg?raw=true "Spotify-This-Song Default")
+![NoItem](/images/105.png?raw=true "Item DNE")
+![NoStock](/images/106.png?raw=true "Tries to buy more than what's in stock")
+![WrongQty](/images/107.png?raw=true "User tried ordering a negative number")
 
 
 ### Movie-This
